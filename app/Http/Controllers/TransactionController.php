@@ -29,22 +29,18 @@ class TransactionController extends Controller
 
         $product = Product::findOrFail($request->product_id);
 
-        // CEK STOK
         if ($product->stock < $request->quantity) {
             return back()->with('error', 'Stock tidak cukup!');
         }
 
-        // HITUNG TOTAL
         $totalPrice = $product->price * $request->quantity;
 
-        // SIMPAN TRANSACTION
         Transaction::create([
             'product_id' => $product->id,
             'quantity' => $request->quantity,
             'total_price' => $totalPrice,
         ]);
 
-        // UPDATE STOCK
         $product->decrement('stock', $request->quantity);
 
         return redirect()->route('transactions.index')
@@ -53,7 +49,6 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction)
     {
-        // rollback stock (optional tapi bagus)
         $transaction->product->increment('stock', $transaction->quantity);
 
         $transaction->delete();

@@ -14,7 +14,6 @@ class Product extends Model
         'description'
     ];
 
-    // RELASI
     public function category()
     {
         return $this->belongsTo(Category::class);
